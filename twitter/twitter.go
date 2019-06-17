@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"time"
 
@@ -55,4 +56,21 @@ func SearchTweets(result chan *SearchTweetsResult, line int) {
 		return
 	}
 	result <- &SearchTweetsResult{Tweets: data, Error: nil}
+}
+
+// FilterTweets to get only what we need, i.e. no retweet, and today's feed
+func FilterTweets(tweets []Tweet) []Tweet {
+	filtered := []Tweet{}
+	for _, tweet := range tweets {
+		creationDate, err := tweet.GetCreationDate()
+		if err != nil {
+			log.Printf("Could not parse tweet creation date. Error was: %s\n", err.Error())
+			continue
+		}
+		refDate := creationDate.AddDate(0, 0, 1)
+		if !tweet.IsRetweet() && time.Now().Before(refDate) {
+			filtered = append(filtered, tweet)
+		}
+	}
+	return filtered
 }

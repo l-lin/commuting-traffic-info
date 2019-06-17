@@ -7,8 +7,11 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/kyokomi/emoji"
 	"github.com/l-lin/commuting-traffic-info/config"
+	"github.com/l-lin/commuting-traffic-info/traffic"
 	"github.com/l-lin/commuting-traffic-info/twitter"
+	"github.com/logrusorgru/aurora"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -48,7 +51,19 @@ func run(cmd *cobra.Command, args []string) {
 	resultCh := make(chan *twitter.SearchTweetsResult)
 	go twitter.SearchTweets(resultCh, lineNb)
 	result := <-resultCh
-	log.Println(result)
+	filteredTweets := twitter.FilterTweets(result.Tweets)
+	s := traffic.GetStatus(filteredTweets)
+	displayStatus(lineNb, s, filteredTweets)
+}
+
+func displayStatus(lineNb int, s *traffic.Status, tweets []twitter.Tweet) {
+	fmt.Printf("%sCommuting traffic for line %d %s\n\n", emoji.Sprint(":train:"), aurora.BrightBlue(lineNb), emoji.Sprint(":train:"))
+	fmt.Println(s)
+	if tweets != nil {
+		for _, tweet := range tweets {
+			fmt.Println(tweet.Render())
+		}
+	}
 }
 
 func init() {

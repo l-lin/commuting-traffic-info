@@ -3,6 +3,7 @@ module github.com/l-lin/commuting-traffic-info
 go 1.12
 
 require (
+	github.com/kyokomi/emoji v2.1.0+incompatible
 	github.com/logrusorgru/aurora v0.0.0-20190428105938-cea283e61946
 	github.com/manifoldco/promptui v0.3.2
 	github.com/mitchellh/go-homedir v1.1.0
