@@ -40,14 +40,12 @@ func (t *Tweet) Render() string {
 			third = string(fullText[size*2-1:])
 		}
 	}
-	return fmt.Sprintf(`
-┌────────────────────────────────────────────┐
+	return fmt.Sprintf(`┌────────────────────────────────────────────┐
 │%s              │
 └────────────────────────────────────────────┘
  %s
  %s
- %s
-	`, t.CreatedAt, first, second, third)
+ %s`, t.CreatedAt, first, second, third)
 }
 
 // SearchTweetsResult is the result from fetching tweets

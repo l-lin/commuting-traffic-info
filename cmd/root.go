@@ -58,7 +58,7 @@ func run(cmd *cobra.Command, args []string) {
 
 func displayStatus(lineNb int, s *traffic.Status, tweets []twitter.Tweet) {
 	fmt.Printf("%sCommuting traffic for line %d %s\n\n", emoji.Sprint(":train:"), aurora.BrightBlue(lineNb), emoji.Sprint(":train:"))
-	fmt.Println(s)
+	fmt.Printf("\t%s\n\n", s)
 	if tweets != nil {
 		for _, tweet := range tweets {
 			fmt.Println(tweet.Render())

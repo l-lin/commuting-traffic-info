@@ -11,6 +11,12 @@ MAKEFLAGS += --silent
 ## compile: compiles project in current system
 compile: clean get fmt vet test build
 
+## install: compiles and install project to $GOPATH/bin
+install:
+	@make compile
+	@echo "  >  Installing binary to ${GOPATH}/bin"
+	@go install .
+
 ## release: Generate binaries and an archive containing all binaries in bin/ folder
 release: clean get fmt vet test build-all archive
 
