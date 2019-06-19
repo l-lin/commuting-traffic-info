@@ -26,26 +26,10 @@ func (t *Tweet) GetCreationDate() (time.Time, error) {
 
 // Render tweet in a pretty format
 func (t *Tweet) Render() string {
-	size := 45
-	fullText := []rune(t.FullText)
-	first := t.FullText
-	second := ""
-	third := ""
-	if len(fullText) > size {
-		first = string(fullText[0 : size-1])
-		if len(fullText) <= size*2 {
-			second = string(fullText[size:])
-		} else {
-			second = string(fullText[size : size*2-1])
-			third = string(fullText[size*2-1:])
-		}
-	}
 	return fmt.Sprintf(`┌────────────────────────────────────────────┐
 │%s              │
 └────────────────────────────────────────────┘
- %s
- %s
- %s`, t.CreatedAt, first, second, third)
+ %s`, t.CreatedAt, t.FullText)
 }
 
 // SearchTweetsResult is the result from fetching tweets
