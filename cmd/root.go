@@ -9,6 +9,7 @@ import (
 
 	"github.com/kyokomi/emoji"
 	"github.com/l-lin/commuting-traffic-info/config"
+	"github.com/l-lin/commuting-traffic-info/format"
 	"github.com/l-lin/commuting-traffic-info/traffic"
 	"github.com/l-lin/commuting-traffic-info/twitter"
 	"github.com/logrusorgru/aurora"
@@ -20,6 +21,7 @@ import (
 const cfgFileName = ".commuting-traffic-info"
 
 var cfgFile string
+var formatType string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -53,7 +55,13 @@ func run(cmd *cobra.Command, args []string) {
 	result := <-resultCh
 	filteredTweets := twitter.FilterTweets(result.Tweets)
 	s := traffic.GetStatus(filteredTweets)
-	displayStatus(lineNb, s, filteredTweets)
+	var formatter format.Formatter
+	if "json" == formatType {
+		formatter = &format.JSONFormatter{}
+	} else {
+		formatter = &format.ConsoleFormatter{}
+	}
+	formatter.Format(lineNb, s, filteredTweets)
 }
 
 func displayStatus(lineNb int, s *traffic.Status, tweets []twitter.Tweet) {
@@ -70,6 +78,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.commuting-traffic-info.yaml)")
+	rootCmd.PersistentFlags().StringVarP(&formatType, "format", "f", "console", "format output \npossible values: \"console\", \"json\"")
 }
 
 // initConfig reads in config file and ENV variables if set.
