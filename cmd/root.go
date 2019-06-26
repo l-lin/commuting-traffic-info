@@ -58,6 +58,9 @@ func run(cmd *cobra.Command, args []string) {
 	var formatter format.Formatter
 	if "json" == formatType {
 		formatter = &format.JSONFormatter{}
+	} else if "rocket.chat" == formatType {
+		webhook := getRocketChatWebhook()
+		formatter = &format.RocketChatFormatter{Webhook: webhook}
 	} else {
 		formatter = &format.ConsoleFormatter{}
 	}
@@ -78,7 +81,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.commuting-traffic-info.yaml)")
-	rootCmd.PersistentFlags().StringVarP(&formatType, "format", "f", "console", "format output \npossible values: \"console\", \"json\"")
+	rootCmd.PersistentFlags().StringVarP(&formatType, "format", "f", "console", "format output \npossible values: \"console\", \"json\", \"rocket.chat\"")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -114,4 +117,14 @@ func initConfig() {
 	} else {
 		config.InitTwitterAPIKeys(cfgFile)
 	}
+}
+
+func getRocketChatWebhook() string {
+	webhook := config.GetRocketChatWebhook()
+	if webhook == "" {
+		log.Println("No Rocket.Chat webhook configured. Initializing it")
+		config.InitRocketChatWebhook(cfgFile)
+		webhook = config.GetRocketChatWebhook()
+	}
+	return webhook
 }

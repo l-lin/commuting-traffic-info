@@ -20,6 +20,7 @@ const (
 	keyKey                 = "key"
 	secretKeyKey           = "secret-key"
 	tokenKey               = "token"
+	rocketChatKey          = "rocket-chat"
 )
 
 // InitTwitterAPIKeys writes twitter consumer API keys in config file
@@ -61,6 +62,32 @@ func InitTwitterAPIKeys(cfgFile string) {
 	}
 }
 
+// InitRocketChatWebhook by writing in the config file
+func InitRocketChatWebhook(cfgFile string) {
+	prompt := promptui.Prompt{
+		Label: "Rocket chat webhook:",
+		Validate: func(input string) error {
+			if len(input) < 1 {
+				return errors.New("Webhook cannot be empty")
+			}
+			return nil
+		},
+	}
+	webhook, err := prompt.Run()
+	if err != nil {
+		log.Fatalln(aurora.BrightRed(err))
+	}
+	f, err := os.OpenFile(cfgFile, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
+	if err != nil {
+		log.Fatalln(aurora.BrightRed(err))
+	}
+	defer f.Close()
+
+	if _, err = f.WriteString(fmt.Sprintf("\n%s: %s", rocketChatKey, webhook)); err != nil {
+		log.Fatalln(aurora.BrightRed(err))
+	}
+}
+
 // GetAPIKey configured from the config file
 func GetAPIKey() string {
 	return viper.GetString(keyKey)
@@ -76,9 +103,14 @@ func GetAPIAuthToken() string {
 	return viper.GetString(tokenKey)
 }
 
+// GetRocketChatWebhook configured from the config file
+func GetRocketChatWebhook() string {
+	return viper.GetString(rocketChatKey)
+}
+
 func validate(input string) error {
 	if len(input) < 1 {
-		return errors.New("The consumer API key cannot be empt")
+		return errors.New("The consumer API key cannot be empty")
 	}
 	return nil
 }

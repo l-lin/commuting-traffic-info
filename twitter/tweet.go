@@ -7,11 +7,19 @@ import (
 
 const searchTweetsURL = "https://api.twitter.com/1.1/search/tweets.json"
 
-// Tweet hold information about tweet
+// Tweet holds information about tweet
 type Tweet struct {
 	CreatedAt       string      `json:"created_at"`
 	FullText        string      `json:"full_text"`
 	RetweetedStatus interface{} `json:"retweeted_status,omitempty"`
+	User            User        `json:"user"`
+}
+
+// User hows the information of twitter user
+type User struct {
+	Name                 string `json:"name"`
+	URL                  string `json:"url"`
+	ProfileImageURLHTTPS string `json:"profile_image_url_https"`
 }
 
 // IsRetweet returns true if the object "retweeted_statuses" is present in the response

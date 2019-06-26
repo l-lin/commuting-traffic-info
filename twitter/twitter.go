@@ -30,7 +30,6 @@ func SearchTweets(result chan *SearchTweetsResult, line int) {
 	q.Add("screen_name", fmt.Sprintf(twitterUser, line))
 	q.Add("count", count)
 	q.Add("tweet_mode", "extended")
-	q.Add("trim_user", "true")
 	q.Add("exclude_replies", "true")
 	req.URL.RawQuery = q.Encode()
 	req.Header.Add("Authorization", "Bearer "+config.GetAPIAuthToken())
