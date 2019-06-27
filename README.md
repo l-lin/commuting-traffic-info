@@ -19,7 +19,10 @@ Usage:
 
 Flags:
       --config string   config file (default is $HOME/.commuting-traffic-info.yaml)
+  -f, --format string   format output
+                        possible values: "console", "json", "rocket.chat" (default "console")
   -h, --help            help for commuting-traffic-info
+      --only-incident   display output only when the traffic is not ok
 
 $ commuting-traffic-info 1
 🚆 Commuting traffic for line 1 🚆
@@ -43,6 +46,9 @@ $ commuting-traffic-info 1
 ## Build
 
 ```bash
+# Check available commands
+make help
+# Install binary
 make install
 ```
 
