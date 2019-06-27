@@ -20,8 +20,11 @@ import (
 
 const cfgFileName = ".commuting-traffic-info"
 
-var cfgFile string
-var formatType string
+var (
+	cfgFile      string
+	formatType   string
+	onlyIncident bool
+)
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -64,7 +67,13 @@ func run(cmd *cobra.Command, args []string) {
 	} else {
 		formatter = &format.ConsoleFormatter{}
 	}
-	formatter.Format(lineNb, s, filteredTweets)
+	if onlyIncident {
+		if traffic.OK != s {
+			formatter.Format(lineNb, s, filteredTweets)
+		}
+	} else {
+		formatter.Format(lineNb, s, filteredTweets)
+	}
 }
 
 func displayStatus(lineNb int, s *traffic.Status, tweets []twitter.Tweet) {
@@ -82,6 +91,7 @@ func init() {
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.commuting-traffic-info.yaml)")
 	rootCmd.PersistentFlags().StringVarP(&formatType, "format", "f", "console", "format output \npossible values: \"console\", \"json\", \"rocket.chat\"")
+	rootCmd.PersistentFlags().BoolVarP(&onlyIncident, "only-incident", "", false, "display output only when the traffic is not ok (default false)")
 }
 
 // initConfig reads in config file and ENV variables if set.

@@ -66,8 +66,11 @@ func FilterTweets(tweets []Tweet) []Tweet {
 			log.Printf("Could not parse tweet creation date. Error was: %s\n", err.Error())
 			continue
 		}
-		refDate := creationDate.AddDate(0, 0, 1)
-		if !tweet.IsRetweet() && time.Now().Before(refDate) {
+		day := creationDate.Day()
+		month := creationDate.Month()
+		year := creationDate.Year()
+		now := time.Now()
+		if !tweet.IsRetweet() && now.Year() == year && now.Month() == month && now.Day() == day {
 			filtered = append(filtered, tweet)
 		}
 	}
